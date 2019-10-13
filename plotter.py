@@ -8,28 +8,39 @@ import matplotlib.pyplot as plot
 import mpl_toolkits.mplot3d.axes3d as p3
 import numpy as np
 import gdb
+import argparse
 
 from gp_data_extractor import *
 
-class Plotter( gdb.Command ):
-    def __init__( self ):
-        super( Plotter, self ).__init__("plot", gdb.COMMAND_OBSCURE )
+class Plotter(gdb.Command):
+    cmd_name = 'plot'
 
-    def invoke( self, arg, from_tty ):
-        args = arg.split()
+    def __init__(self):
+        super().__init__(self.cmd_name, gdb.COMMAND_DATA, gdb.COMPLETE_SYMBOL)
+        self.parser = argparse.ArgumentParser(description='Creates plots from arrays.')
+        self.parser.add_argument('arrays', metavar='array@len', nargs='+',
+                    help='array variables in format name@len')
+        self.parser.add_argument('--dt', type=float,
+                    help='if given, will construct time as x axis values')
+        self.parser.add_argument('--fs', type=float,
+                    help='sampling frequency, works like --dt (but with inverse), specifying both is undefined')
 
-        data = gp_get_data( args )
-        fig = plot.figure()
-        ax = fig.add_subplot(111)
-        ax.grid( True )
-        for  u in data:
-            if u.dtype.kind == 'c':
-                ax.plot( np.abs(u) )
+    def invoke(self, arg, from_tty):
+        args = self.parser.parse_args(gdb.string_to_argv(arg))
+        if args.fs:
+            args.dt = 1.0 / args.fs
+        data = gp_get_data(args.arrays)
+        fig, ax = plot.subplots()
+        for u, name in zip(data, args.arrays):
+            if args.dt:
+                t = np.linspace(0, len(u) * args.dt, len(u))
             else:
-                ax.plot( u )
-        leg = ax.legend((args),
-            'upper right', shadow=False)
-        leg.get_frame().set_alpha(0.5)
+                t = np.arange(len(u))
+            if u.dtype.kind == 'c':
+                u = np.abs(u)
+            ax.plot(t, u, label=name)
+        ax.grid(True)
+        ax.legend()
         plot.show()
 # end class Plotter
 
@@ -53,8 +64,8 @@ class PlotThreeD( gdb.Command ):
         plot.show()
 # end class PlotThreeD
 
-   
 
-    
+
+
 Plotter()
 PlotThreeD()

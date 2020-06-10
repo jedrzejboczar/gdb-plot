@@ -1,20 +1,17 @@
 # gdb-plot
 
-> This is a fork of https://github.com/bthcode/gdb-plot.
+> This is a fork of https://github.com/bthcode/gdb-plot with some improvements.
 
-gdb-plot is
+This is a set of utilities for plotting and working with array data directly from GDB.
+Features:
 
-== INTRODUCTION: ==
+* plot an array directly from GDB command line
+* export an array to .mat file (or other formats)
+* print short summary of stack frame variables
 
-This is a set of utils for:
+## Overview
 
- * plotting from the gdb command line
- * saving c data to .mat files from gdb command line
- * exploring the stack frame
-
-== OVERVIEW: ==
-
-I have attempted to show support for:
+Support for:
 
  * c array, c pointer
  * STL vector
@@ -22,14 +19,14 @@ I have attempted to show support for:
  * Boost vector
  * Boost complex vector
 
-== REQUIREMENTS: ==
+## Requirements
 
  * gdb >= 7.0
  * python
  * numpy
- * matplotlib ( for plotting )
- * scipy ( if you want to save to .mat file )
- * iPython ( if you want to send data for interactive analysis )
+ * matplotlib (for plotting)
+ * scipy (if you want to save to .mat file)
+ * iPython (if you want to send data for interactive analysis)
 
 The examples are divided up so you only need the dependencies for the example you want to run:
 

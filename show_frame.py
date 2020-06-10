@@ -44,7 +44,7 @@ def describe( var, sym ):
         pass
     elif var_type.find( '[' ) >= 0 and var_type.find( ']' ) > var_type.find( '[' ):
         pass
-    
+
 
     return [ str(var_type), sym_types[ sym.addr_class ], eval(str(size)) ]
 # end describe
@@ -62,7 +62,7 @@ class ShowFrame( gdb.Command ):
         frame =  gdb.selected_frame()
         block = gdb.selected_frame().block()
         frame_vars = {}
-        
+
         ###
         # Walk through the symbols in the block
         #
@@ -75,8 +75,8 @@ class ShowFrame( gdb.Command ):
         print((pprint.pformat( frame_vars )))
 
     # def invoke
-         
+
 # end class StemPlotter
 
-   
+
 ShowFrame()

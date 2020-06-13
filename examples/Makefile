@@ -1,13 +1,25 @@
-TARGETS = \
+TARGETS := \
 		  raw_pointers \
-		  stl_example \
-		  boost_numerics_example \
-		  eigen_example
+		  stl_example
 
-CXXFLAGS = -g -O0
-TARGETS_BUILD = $(TARGETS:%=build/%)
+BOOST ?= 1
+EIGEN ?= 1
 
-all: $(TARGETS_BUILD)
+CXXFLAGS := -g -O0
+
+
+ifeq ($(BOOST),1)
+TARGETS += eigen_example
+endif
+
+ifeq ($(EIGEN),1)
+TARGETS += boost_numerics_example
+endif
+
+_TARGETS := $(TARGETS:%=build/%)
+
+
+all: $(_TARGETS)
 
 build/eigen_example: eigen_example.cpp | build
 	$(CXX) $(CXXFLAGS) $# $< -o $@ `pkg-config --cflags eigen3`

@@ -5,7 +5,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import mpl_toolkits.mplot3d.axes3d as p3
 
-import gdb_expression
+from gdb_plot import cmd_grammar
 
 
 class Plotter(gdb.Command):
@@ -18,7 +18,7 @@ class Plotter(gdb.Command):
     def invoke(self, arg, from_tty):
         plt.close()
 
-        cmd = gdb_expression.command.parseString(arg)
+        cmd = cmd_grammar.command.parseString(arg)
 
         dt = 1
         if cmd.dt:

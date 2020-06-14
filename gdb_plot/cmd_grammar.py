@@ -35,7 +35,7 @@ variable = Combine(varname('name') + Optional(Combine('@' + vrange)))
 
 def parse_variable(tokens):
     import gdb
-    from gdb_plot import gdb_arrays
+    from gdb_plot.gdb_arrays import gdb_array_eval
 
     try:
         kwargs = {}
@@ -45,7 +45,7 @@ def parse_variable(tokens):
             kwargs['stop'] = tokens.stop
         if tokens.step:
             kwargs['step'] = tokens.step
-        return gdb_arrays.gdb_array_eval(tokens.name, **kwargs)
+        return gdb_array_eval(tokens.name, **kwargs)
     except gdb.error:
         if tokens.stop:
             raise RuntimeError('constant with @range: %s' % tokens)

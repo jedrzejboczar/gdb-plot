@@ -65,7 +65,7 @@ def _eval_pair(op_map, reverse=False):
 ### Grammar ####################################################################
 
 real = Regex(r"\d+(?:\.\d*)?(?:[eE][+-]?\d+)?")
-decimal = Word(nums)
+decimal = Word('-' + nums, nums)
 hexa = Combine('0x' + Word(hexnums))
 binary = Combine('0b' + Word('0' + '1'))
 imaginary = Combine(real + 'j')

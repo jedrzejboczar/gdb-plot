@@ -46,7 +46,7 @@ def _plot_time(cmd: pyparsing.ParseResults, n: int) -> np.array:
     elif cmd.fs:
         dt = 1 / cmd.fs
 
-    t = np.linspace(cmd.t0 or 0, n * dt, n)
+    t = np.linspace(cmd.t0 or 0, (n - 1) * dt, n)
     return t
 
 

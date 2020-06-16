@@ -50,7 +50,7 @@ class TestPlot(unittest.TestCase):
         self.axes.plot.assert_called_once()
         self.cmp_np(self.axes.plot.call_args.args[0], [0, 1, 2, 3, 4], msg='t')
         self.cmp_np(self.axes.plot.call_args.args[1], [1, 3, 5, 7, 9], msg='a1')
-        self.assertEqual(self.axes.plot.call_args.kwargs, {})
+        self.assertEqual(self.axes.plot.call_args.kwargs, {'label': 'a1'})
 
     def test_multiple(self, mock_plt):
         mock_plt.subplots = self.subplots
@@ -59,8 +59,8 @@ class TestPlot(unittest.TestCase):
         p.invoke('a1 a2@5', from_tty=False)
 
         calls_ref = [
-            mock.call([0, 1, 2, 3, 4], [1, 3, 5, 7, 9]),
-            mock.call([0, 1, 2, 3, 4], [4, 3, 2, 4, 8]),
+            mock.call([0, 1, 2, 3, 4], [1, 3, 5, 7, 9], label='a1'),
+            mock.call([0, 1, 2, 3, 4], [4, 3, 2, 4, 8], label='a2@5'),
         ]
 
         self.subplots.assert_called_once()
@@ -73,9 +73,9 @@ class TestPlot(unittest.TestCase):
         p.invoke('a1 !c red !m o !lw 3 !l dashed !ms 5', from_tty=False)
 
         calls_ref = [
-            mock.call([0, 1, 2, 3, 4], [1, 3, 5, 7, 9],
-                      color='red', marker='o', linewidth=3,
-                      linestyle='dashed', markersize=5),
+            mock.call([0, 1, 2, 3, 4], [1, 3, 5, 7, 9], label='a1',
+                      color='red', marker='o', linewidth=3.0,
+                      linestyle='dashed', markersize=5.0),
         ]
 
         self.subplots.assert_called_once()

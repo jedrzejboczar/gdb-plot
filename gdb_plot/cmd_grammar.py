@@ -14,6 +14,7 @@ from pyparsing import (
     oneOf,
     printables,
     Combine,
+    Empty,
     Group,
     Keyword,
     OneOrMore,
@@ -109,5 +110,13 @@ _local_params = [Optional(param(keyword, name, word))
                  for name, (keyword, word) in _local_param_defs.items()]
 local_params = reduce(operator.and_, _local_params)
 
-record = Group(expr('expr') + Optional(string('label')) + local_params)('record')
+marker = Empty().setParseAction(lambda s, loc, t: loc)
+marked_expr = marker('_start') + expr('expr') + marker('_end')
+record = Group(marked_expr + Optional(string('label')) + local_params)('record')
+
+def save_string(s, loc, tokens):
+    tokens['string'] = s[tokens._start:tokens._end]
+
+marked_expr.addParseAction(save_string)
+
 command = StringStart() + global_params + Group(OneOrMore(record))('records') + StringEnd()

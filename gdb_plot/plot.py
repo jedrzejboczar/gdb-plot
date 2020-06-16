@@ -50,6 +50,8 @@ class Plot(gdb.Command):
             if getattr(record, name):
                 kwargs[name] = getattr(record, name)
 
+        kwargs['label'] = kwargs.get('label', record.string.strip())
+
         return args, kwargs
 
     def generate_time(self, cmd: pyparsing.ParseResults, n: int) -> np.array:

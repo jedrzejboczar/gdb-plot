@@ -34,8 +34,20 @@ def parse_simple(value: gdb.Value) -> Union[float, complex]:
     """Parse either a simple number (float/int) or a complex value (std::complex)"""
     return float(value) if not is_complex(value) else parse_complex(value)
 
+def get_range(_slice, length=None):
+    """Compute indicies required for given slice, depending on whether we know length or not"""
+    if length is not None and _slice is not None:
+        return range(*_slice.indices(length))
+    elif length is not None:
+        return range(length)
+    elif _slice is not None:
+        if _slice.step > 0:
+            return range(*_slice.indices(_slice.stop))
+        else:
+            return range(*_slice.indices(_slice.start) - 1)
+    raise ValueError((_slice, length))
 
-def gdb_array_eval(name: str, start: int = 0, stop: int = None, step: int = 1) -> np.array:
+def gdb_array_eval(name: str, slic: slice = None) -> np.array:
     """Retrieve data from GDB varable into numpy array
 
     Supports arrays, raw pointers (unknown length) and some special types:
@@ -51,13 +63,10 @@ def gdb_array_eval(name: str, start: int = 0, stop: int = None, step: int = 1) -
         return np.array([parse_simple(value)])
     if code == gdb.TYPE_CODE_ARRAY:
         _lower, upper = base_type.range()
-        if stop is None:
-            stop = upper
-        values = [parse_simple(value[i]) for i in range(start, min(stop, upper), step)]
+        values = [parse_simple(value[i]) for i in get_range(slic, upper)]
         return np.array(values)
     if code == gdb.TYPE_CODE_PTR:
-        assert stop is not None, 'Unknown length of raw pointer type: %s' % value.type
-        values = [parse_simple(value[i]) for i in range(start, stop, step)]
+        values = [parse_simple(value[i]) for i in get_range(slic)]
         return np.array(values)
     if code == gdb.TYPE_CODE_STRUCT:
         if 'boost' in base_type:

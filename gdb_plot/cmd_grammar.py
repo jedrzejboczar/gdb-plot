@@ -30,7 +30,10 @@ from gdb_plot import math_grammar
 ### Variable grammar ###########################################################
 
 _int = math_grammar.integer
-vrange = Combine(Optional(_int('start') + ':') + _int('stop') + Optional(':' + _int('step')))
+vrange_3 = Combine(Optional(_int('start')) + ':' + Optional(_int('stop')) + ':' + Optional(_int('step')))
+vrange_2 = Combine(Optional(_int('start')) + ':' + Optional(_int('stop')))
+vrange_1 = _int('stop')
+vrange = vrange_3 | vrange_2 | vrange_1
 varname = Word(alphas + '_', alphanums + '_')
 variable = Combine(varname('name') + Optional(Combine('@' + vrange)))
 
@@ -39,14 +42,12 @@ def parse_variable(tokens):
     from gdb_plot.gdb_arrays import gdb_array_eval
 
     try:
-        kwargs = {}
-        if tokens.start:
-            kwargs['start'] = tokens.start
-        if tokens.stop:
-            kwargs['stop'] = tokens.stop
-        if tokens.step:
-            kwargs['step'] = tokens.step
-        return gdb_array_eval(tokens.name, **kwargs)
+        s = slice(
+            tokens.start if tokens.start != '' else None,
+            tokens.stop if tokens.stop != '' else None,
+            tokens.step if tokens.step != '' else None
+        )
+        return gdb_array_eval(tokens.name, s)
     except gdb.error:
         if tokens.stop:
             raise RuntimeError('constant with @range: %s' % tokens)

@@ -1,11 +1,12 @@
 TARGETS := \
 		  raw_pointers \
-		  stl_example
+		  stl_example \
+		  example
 
 BOOST ?= 1
 EIGEN ?= 1
 
-CXXFLAGS := -g -O0
+CXXFLAGS := -g -O0 -Wall
 
 
 ifeq ($(BOOST),1)
@@ -20,6 +21,9 @@ _TARGETS := $(TARGETS:%=build/%)
 
 
 all: $(_TARGETS)
+
+gdb: $(_TARGETS)
+	gdb -x gdbinit build/example
 
 build/eigen_example: eigen_example.cpp | build
 	$(CXX) $(CXXFLAGS) $# $< -o $@ `pkg-config --cflags eigen3`

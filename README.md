@@ -33,6 +33,8 @@ Just add this line to your `~/.gdbinit`:
 source <your_directory>/gdb_setup.py
 ```
 
+and make sure you have all the requirements installed (`python -m pip install -r <your_directory>/requirements.txt`)
+
 ### Import it
 
 As an alternative you can install the Python package with `pip` (optionally with `--user`):

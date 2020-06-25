@@ -1,0 +1,9 @@
+# move till the breakpoint
+run
+# most breakpoints require moving out of psnip_trap
+up
+
+# print local variables
+set print elements 10
+echo "Local variables:\n"
+info locals
